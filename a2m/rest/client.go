@@ -2,7 +2,9 @@ package rest
 
 import (
 	"fmt"
+	"strings"
 	"net/http"
+	"net/url"
 	"io/ioutil"
 	"encoding/json"
 	"github.com/RallySoftware/analytics2-cli/a2m/config"
@@ -18,12 +20,14 @@ func (e Non200ResponseCode) Error() string {
 }
 
 
-func ExecuteAndExtractJson(config *config.Configuration, url string) (map[string]interface{}, error) {
+func ExecuteAndExtractJson(config *config.Configuration, url string, params url.Values) (map[string]interface{}, error) {
 	client := &http.Client{}
 
 	// move Urls to a method on the configuration object?
 
-	req, err := http.NewRequest("GET", url, nil)
+	fullUrl := []string {url, params.Encode()}
+
+	req, err := http.NewRequest("GET", strings.Join(fullUrl, "?"), nil)
 	req.SetBasicAuth(config.UserName, config.Password)
 	resp, err := client.Do(req)
 
