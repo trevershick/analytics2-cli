@@ -4,13 +4,20 @@ import (
 	"os/user"
 	"encoding/json"
 	"os"
-	// "fmt"
+	"github.com/codegangsta/cli"
 	"strings"
 )
+
 
 type Configuration struct {
 	UserName string `json:"username,omitempty"`
 	Password string `json:"password,omitempty"`
+	BaseUrl string `json:"baseUrl,omitempty"`
+}
+
+func (c *Configuration) FullUrl(url string) string {
+	s := []string {c.BaseUrl,url}
+	return strings.Join(s, "")
 }
 
 func getConfigFileName() (string, error) {
@@ -22,7 +29,7 @@ func getConfigFileName() (string, error) {
 	return strings.Join(s, "/"), nil
 }
 
-func GetConfiguration() (*Configuration,error) {
+func GetConfiguration(c *cli.Context) (*Configuration,error) {
 	rcFileName, _ := getConfigFileName()
 
 	if _, err := os.Stat(rcFileName); os.IsNotExist(err) {
@@ -49,7 +56,24 @@ func GetConfiguration() (*Configuration,error) {
 	if err := decoder.Decode(&configuration); err != nil {
 		return nil, err
 	}
+	overrideLoadedWithGlobalParams(c, &configuration)
+	if c.GlobalBool("save") {
+		UpdateConfiguration(configuration)
+	}
+
 	return &configuration, nil
+}
+
+func overrideLoadedWithGlobalParams(c *cli.Context, config *Configuration) {
+	if c.GlobalIsSet("user") {
+		config.UserName = c.GlobalString("user")
+	}
+	if c.GlobalIsSet("pass") {
+		config.Password = c.GlobalString("pass")
+	}
+	if c.GlobalIsSet("base") {
+		config.BaseUrl = c.GlobalString("base")
+	}
 }
 
 func UpdateConfiguration(configuration Configuration) error {

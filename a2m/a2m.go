@@ -4,20 +4,42 @@ import (
 	"os"
 	"github.com/codegangsta/cli"
 	"github.com/RallySoftware/analytics2-cli/a2m/work"
-	"github.com/RallySoftware/analytics2-cli/a2m/config"
 )
 
 func main() {
 
-	_, err := config.GetConfiguration()
-	if err != nil {
-		panic(err)
-	}
-
 	// fmt.Printf("%s",config)
 	app := cli.NewApp()
 	app.Name = "a2m"
-	app.Usage = "fight the loneliness!"
+	app.Author = "Trever Shick"
+	app.Email = "tshick@rallydev.com"
+	app.Usage = "A2 Management CLI"
+	app.Version = "0.0.1"
+
+	app.Flags = []cli.Flag {
+		cli.StringFlag {
+			Name: "base, b",
+			Value: "http://localhost:9201/analytics-etl",
+			Usage: "Base URL to connect to",
+			EnvVar: "A2M_BASE_URL",
+		},
+		cli.StringFlag {
+			Name: "user, u",
+			Value: "nobody",
+			Usage: "User Name to connect to the web service",
+			EnvVar: "A2M_USER",
+		},
+		cli.StringFlag {
+			Name: "pass, p",
+			Value: "nothing",
+			Usage: "Password to use for authentication",
+			EnvVar: "A2M_PASSWORD",
+		},
+		cli.BoolFlag {
+			Name: "save, s",
+			Usage: "Save supplied arguments to ~/.a2mrc",
+		},
+	}
 	app.Commands = work.WorkCommands()
 /*
 	app.Commands = []cli.Command {
