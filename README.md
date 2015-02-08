@@ -3,6 +3,8 @@
 This repo houses the a2m tool which is a Go based command line tool for communicating with
 the A2 services (API and ETL).  The project is in its infancy.
 
+*Important Note* - this CLI only works with the `workservice-plugin` branch of the analytics2 repo.
+
 
 
 # Installing A2M
