@@ -66,6 +66,18 @@ func InfoCommands() []cli.Command {
 				},
 			},
 		},
+		{
+			Name: "halted-workspaces",
+			Usage: "Show halted workspaces",
+			Action: func (c *cli.Context) {
+				args := showHaltedArgs {
+					config: config.GetConfigurationOrPanic(c),
+					loader: rest.ExecuteAndExtractJsonObject,
+					writer: os.Stdout,
+				}
+				showHalted(&args)
+			},
+		},
 	}
 	return c
 }

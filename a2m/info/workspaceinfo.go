@@ -46,3 +46,13 @@ type WorkspaceInfo struct {
 	Workspace             float64 `json:"workspace"`
 	WorkspaceCreationDate string  `json:"workspaceCreationDate"`
 }
+
+type HaltedWorkspaceInfo struct {
+	Data struct {
+		Reason string `json:"reason"`
+	} `json:"data"`
+	HealthCheckShouldFail bool    `json:"healthCheckShouldFail"`
+	SubscriptionId        float64 `json:"subscriptionId"`
+	Timestamp             string  `json:"timestamp"`
+	WorkspaceOid          float64 `json:"workspaceOid"`
+}
