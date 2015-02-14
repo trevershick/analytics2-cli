@@ -67,7 +67,7 @@ func InfoCommands() []cli.Command {
 			},
 		},
 		{
-			Name: "halted",
+			Name: "halted-workspaces",
 			Usage: "Show halted workspaces",
 			Action: func (c *cli.Context) {
 				args := showHaltedArgs {

@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"os"
 	"fmt"
 	"strings"
 	"net/http"
@@ -50,6 +51,8 @@ func ExecuteAndExtractJsonObject(args *RestArgs) (error) {
 	}
 
 	if resp.StatusCode != 200 {
+		fmt.Fprintf(os.Stderr, "HTTP Request URL was %s", fullUrl)
+		fmt.Fprintf(os.Stderr, "HTTP Response is %v", resp)
 		return Non200ResponseCode{code:resp.StatusCode}
 	}
 
