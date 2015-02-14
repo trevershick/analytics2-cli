@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 	"github.com/codegangsta/cli"
-	"github.com/RallySoftware/analytics2-cli/a2m/work"
+	"github.com/trevershick/analytics2-cli/a2m/work"
 )
 
 func main() {

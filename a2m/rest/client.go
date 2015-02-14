@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"io/ioutil"
 	"encoding/json"
-	"github.com/RallySoftware/analytics2-cli/a2m/config"
+	"github.com/trevershick/analytics2-cli/a2m/config"
 )
 
 

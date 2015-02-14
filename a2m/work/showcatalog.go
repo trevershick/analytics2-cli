@@ -5,8 +5,8 @@ import (
 	"os"
 	"net/url"
 	"github.com/codegangsta/cli"
-	"github.com/RallySoftware/analytics2-cli/a2m/rest"
-	"github.com/RallySoftware/analytics2-cli/a2m/config"
+	"github.com/trevershick/analytics2-cli/a2m/rest"
+	"github.com/trevershick/analytics2-cli/a2m/config"
 )
 
 func ShowCatalogCommand() cli.Command {
