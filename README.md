@@ -29,9 +29,11 @@ the A2 services (API and ETL).  The project is in its infancy.
 	  Trever Shick - <tshick@rallydev.com>
 
 	COMMANDS:
-	   catalog	Show the work catalog
-	   tasks	Show the tasks in-flight
-	   help, h	Shows a list of commands or help for one command
+	   catalog		Show the work catalog
+	   tasks		Show the tasks in-flight
+	   revision-count	Show the number of revisions in a workspace's queue
+	   halted		Shows if a workspace is halted
+	   help, h		Shows a list of commands or help for one command
 
 	GLOBAL OPTIONS:
 	   --base, -b "http://localhost:9201/analytics-etl"	Base URL to connect to [$A2M_BASE_URL]
@@ -67,4 +69,29 @@ the A2 services (API and ETL).  The project is in its infancy.
 	releasesRefreshTask                      : Refresh the releases for all workspaces
 	revisionQueueTask                        : Pools the revision queue and looks for workspaces with revision to process.
 	unhaltAllWorkspacesInDatabaseTask        : Unhalts all workspaces in the specified database partition.
+
+# Getting Workspace Information
+
+## Getting the count of revisions in the queue for a workspace
+
+	> $ ./a2m help revision-count
+
+	NAME:
+	   revision-count - Show the number of revisions in a workspace's queue
+
+	USAGE:
+	   command revision-count [command options] [arguments...]
+
+	OPTIONS:
+	   --workspace, -w "0"	The workspace Id
+
+	> $ ./a2m revision-count -w 41529001
+	80444
+
+
+## Querying for the halted status of a workspace
+
+	> $ ./a2m halted -w 41529001
+	true
+
 

@@ -9,11 +9,11 @@ import (
 	"github.com/trevershick/analytics2-cli/a2m/config"
 )
 
-func ShowCatalogCommand() cli.Command {
+func showCatalogCommand() cli.Command {
 	return cli.Command {
 			Name:"catalog",
 			Usage: "Show the work catalog",
-			Action: ShowCatalog,
+			Action: showCatalog,
 		}
 }
 
@@ -21,7 +21,7 @@ func getShowCatalogUrl(c *config.Configuration) string {
 	return c.FullUrl("/management/work/catalog")
 }
 
-func ShowCatalog(c *cli.Context) {
+func showCatalog(c *cli.Context) {
 
 	config, err := config.GetConfiguration(c)
 	if err != nil {
