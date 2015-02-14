@@ -1,34 +1,44 @@
 package info
 
 import (
+	"io"
 	"fmt"
 	"os"
 	"net/url"
-	"github.com/codegangsta/cli"
-	"github.com/trevershick/analytics2-cli/a2m/rest"
 	"github.com/trevershick/analytics2-cli/a2m/config"
+	"github.com/trevershick/analytics2-cli/a2m/rest"
 	"github.com/pivotal-golang/bytefmt"
 )
 
-func showCollectionInformation(c *cli.Context) {
-	config, err := config.GetConfiguration(c)
-	if err != nil {
-		panic(err)
-	}
+type showCollectionArgs struct {
+	config *config.Configuration
+	workspaceId int
+	loader rest.Loader
+	writer io.Writer
+}
 
+func showCollectionInformation(args *showCollectionArgs) {
 	wi := WorkspaceInfo{}
-	err = rest.ExecuteAndExtractJsonObject(config, getWorkspaceInfoUrl(c, config), url.Values{}, &wi)
+
+	restArgs := &rest.RestArgs{
+		Config: args.config,
+		Url: getWorkspaceInfoUrl(args.config, args.workspaceId),
+		Params: url.Values{},
+		ResponseData: &wi,
+	}
+	err := args.loader(restArgs)
+
 	if err != nil {
-		fmt.Printf("%s", err)
+		fmt.Fprintf(args.writer, "%s", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("\nCollections for Workspace %d", uint64(wi.Workspace))
-	fmt.Printf("\n=============================================================================")
+	fmt.Fprintf(args.writer, "\nCollections for Workspace %d", args.workspaceId)
+	fmt.Fprintf(args.writer, "\n=============================================================================")
 	for _, c := range wi.Collections {
 		n := c.Name
 		s := c.TotalStorageSize
-		fmt.Printf("\n%-40s %-15d %-10s", n, uint64(s), bytefmt.ByteSize(uint64(s)))
+		fmt.Fprintf(args.writer, "\n%-40s %-15d %-10s", n, uint64(s), bytefmt.ByteSize(uint64(s)))
 	}
-	fmt.Printf("\n\n")
+	fmt.Fprintf(args.writer, "\n\n")
 }
