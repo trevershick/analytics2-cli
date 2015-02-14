@@ -31,6 +31,25 @@ func AdminCommands() []cli.Command {
 				},
 			},
 		},
+		{
+			Name: "unhalt",
+			Usage: "Unhalt a workspace",
+			Action: func (c *cli.Context) {
+				args := unhaltArgs {
+					workspaceId: getWorkspaceId(c),
+					config: config.GetConfigurationOrPanic(c),
+					loader: rest.ExecuteAndExtractPlainText,
+					writer: os.Stdout,
+				}
+				unhalt(&args)
+			},
+			Flags: []cli.Flag {
+				cli.IntFlag {
+					Name: "workspace, w",
+					Usage: "The workspace Id",
+				},
+			},
+		},
 	}
 	return c
 }
