@@ -4,6 +4,7 @@ import (
 	"os"
 	"github.com/codegangsta/cli"
 	"github.com/trevershick/analytics2-cli/a2m/work"
+	"github.com/trevershick/analytics2-cli/a2m/info"
 )
 
 func main() {
@@ -40,7 +41,16 @@ func main() {
 			Usage: "Save supplied arguments to ~/.a2mrc",
 		},
 	}
-	app.Commands = work.WorkCommands()
+	commands := []cli.Command{}
+
+	// put into a loop of functions
+	x := work.WorkCommands()
+	commands = append(commands, x...)
+
+	x = info.InfoCommands()
+	commands = append(commands, x...)
+
+	app.Commands = commands
 /*
 	app.Commands = []cli.Command {
 	{
