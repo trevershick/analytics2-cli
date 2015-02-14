@@ -29,6 +29,14 @@ func getConfigFileName() (string, error) {
 	return strings.Join(s, "/"), nil
 }
 
+func GetConfigurationOrPanic(c *cli.Context) (*Configuration) {
+	config, err := GetConfiguration(c)
+		if err != nil {
+		panic(err)
+	}
+	return config
+}
+
 func GetConfiguration(c *cli.Context) (*Configuration,error) {
 	rcFileName, _ := getConfigFileName()
 

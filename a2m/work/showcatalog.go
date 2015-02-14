@@ -3,17 +3,31 @@ package work
 import (
 	"fmt"
 	"os"
+	"io"
 	"net/url"
 	"github.com/codegangsta/cli"
-	"github.com/trevershick/analytics2-cli/a2m/rest"
 	"github.com/trevershick/analytics2-cli/a2m/config"
+	"github.com/trevershick/analytics2-cli/a2m/rest"
 )
+
+type showCatalogArgs struct {
+	config *config.Configuration
+	loader rest.Loader
+	writer io.Writer
+}
 
 func showCatalogCommand() cli.Command {
 	return cli.Command {
 			Name:"catalog",
 			Usage: "Show the work catalog",
-			Action: showCatalog,
+			Action: func(c *cli.Context) {
+				args := showCatalogArgs{
+					config: config.GetConfigurationOrPanic(c),
+					loader: rest.ExecuteAndExtractJsonObject,
+					writer: os.Stdout,
+				}
+				showCatalog(&args)
+			},
 		}
 }
 
@@ -21,30 +35,36 @@ func getShowCatalogUrl(c *config.Configuration) string {
 	return c.FullUrl("/management/work/catalog")
 }
 
-func showCatalog(c *cli.Context) {
+func showCatalog(args *showCatalogArgs) {
 
-	config, err := config.GetConfiguration(c)
-	if err != nil {
-		panic(err)
+	showCatalogUrl := getShowCatalogUrl(args.config)
+	params := url.Values{}
+
+	var obj map[string]interface {}
+
+	restArgs := &rest.RestArgs{
+		Config: args.config,
+		Url: showCatalogUrl,
+		Params: params,
+		ResponseData: &obj,
 	}
 
-	obj, err := rest.ExecuteAndExtractJson(config, getShowCatalogUrl(config), url.Values{})
+	err := args.loader(restArgs)
 	if err != nil {
-		fmt.Printf("%s", err)
+		fmt.Fprintf(args.writer, "%s", err)
 		os.Exit(1)
 	}
-	fmt.Println("Yay, got results -> ", obj)
 
 	var available []interface {}
 	available = obj["available"].([]interface{} )
 
-	fmt.Printf("\nAvailable Tasks in the Work Catalog @ %s", getShowCatalogUrl(config), url.Values{})
-	fmt.Printf("\n=============================================================================")
+	fmt.Fprintf(args.writer, "\nAvailable Tasks in the Work Catalog @ %s", showCatalogUrl, url.Values{})
+	fmt.Fprintf(args.writer, "\n=============================================================================")
 	for i := range available {
 		workTask := available[i].(map[string]interface{})
 
 		name := workTask["name"].(string)
 		desc := workTask["description"].(string)
-		fmt.Printf("\n%-40s : %s", name,desc )
+		fmt.Fprintf(args.writer, "\n%-40s : %s", name,desc )
 	}
 }
