@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/trevershick/analytics2-cli.png?label=ready&title=Ready)](https://waffle.io/trevershick/analytics2-cli)
 # analytics2-cli
 
 This repo houses the a2m tool which is a Go based command line tool for communicating with
