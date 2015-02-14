@@ -30,6 +30,17 @@ func InfoCommands() []cli.Command {
 				},
 			},
 		},
+		{
+			Name: "collections",
+			Usage: "Show basic workspace collection information",
+			Action: showCollectionInformation,
+			Flags: []cli.Flag {
+				cli.IntFlag {
+					Name: "workspace, w",
+					Usage: "The workspace Id",
+				},
+			},
+		},
 	}
 	return c
 }
