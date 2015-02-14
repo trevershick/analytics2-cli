@@ -5,6 +5,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/trevershick/analytics2-cli/a2m/work"
 	"github.com/trevershick/analytics2-cli/a2m/info"
+	"github.com/trevershick/analytics2-cli/a2m/admin"
 )
 
 func main() {
@@ -48,6 +49,9 @@ func main() {
 	commands = append(commands, x...)
 
 	x = info.InfoCommands()
+	commands = append(commands, x...)
+
+	x = admin.AdminCommands()
 	commands = append(commands, x...)
 
 	app.Commands = commands

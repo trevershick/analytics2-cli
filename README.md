@@ -102,3 +102,16 @@ the A2 services (API and ETL).  The project is in its infancy.
 	=============================================================================
 	41529001        100             false 2015-02-14T15:32:28Z manually halted
 
+## Halting a workspace
+
+	> $ ./a2m halt -w 41529001
+	Halted workspace 41529001
+	> $ echo $?
+	0
+
+	> $ ./a2m halt -w 41529001
+	Workspace 41529001 is already halted
+	> $ echo $?
+	1
+
+
