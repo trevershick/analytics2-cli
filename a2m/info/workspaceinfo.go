@@ -1,11 +1,13 @@
 package info
 // generated from http://mervine.net/json2struct
+
+type CollectionNameAndSize struct {
+	Name             string  `json:"name"`
+	TotalStorageSize float64 `json:"totalStorageSize"`
+}
 type WorkspaceInfo struct {
 	ApiHalted   interface{} `json:"apiHalted"`
-	Collections []struct {
-		Name             string  `json:"name"`
-		TotalStorageSize float64 `json:"totalStorageSize"`
-	} `json:"collections"`
+	Collections []CollectionNameAndSize `json:"collections"`
 	Database             string      `json:"database"`
 	EarliestRevisionDate string      `json:"earliestRevisionDate"`
 	EtlDate              interface{} `json:"etlDate"`
