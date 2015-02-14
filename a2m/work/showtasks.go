@@ -3,17 +3,33 @@ package work
 import (
 	"fmt"
 	"os"
+	"io"
 	"net/url"
 	"github.com/codegangsta/cli"
 	"github.com/trevershick/analytics2-cli/a2m/rest"
 	"github.com/trevershick/analytics2-cli/a2m/config"
 )
 
+type showTasksArgs struct {
+	config *config.Configuration
+	recent bool
+	loader rest.Loader
+	writer io.Writer
+}
+
 func showTasksCommand() cli.Command {
 	return cli.Command {
 		Name:"tasks",
 		Usage: "Show the tasks in-flight",
-		Action: showTasks,
+		Action: func(c *cli.Context) {
+			args := &showTasksArgs{
+				config: config.GetConfigurationOrPanic(c),
+				recent: c.Bool("recent"),
+				loader: rest.ExecuteAndExtractJsonObject,
+				writer: os.Stdout,
+			}
+			showTasks(args)
+		},
 		Flags: []cli.Flag {
 			cli.BoolFlag {
 				Name: "recent, r",
@@ -23,33 +39,41 @@ func showTasksCommand() cli.Command {
 	}
 }
 
+
 func getTasksUrl(c *config.Configuration) string {
 	return c.FullUrl("/management/work/tasks")
 }
 
-func showTasks(c *cli.Context) {
-	config, err := config.GetConfiguration(c)
-	if err != nil {
-		panic(err)
-	}
+func showTasks(args *showTasksArgs) {
 
 	params := url.Values{}
 
-	if c.Bool("recent") {
+	if args.recent {
 		params.Set("active","false")
 	}
-	obj, err := rest.ExecuteAndExtractJson(config, getTasksUrl(config), params)
+	tasksUrl := getTasksUrl(args.config)
+
+
+	var obj map[string]interface{}
+
+	restArgs := &rest.RestArgs{
+		Config: args.config,
+		Url: tasksUrl,
+		Params: params,
+		ResponseData: &obj,
+	}
+
+	err := args.loader(restArgs)
 	if err != nil {
-		fmt.Printf("%s", err)
+		fmt.Fprintf(args.writer, "%s", err)
 		os.Exit(1)
 	}
-	fmt.Println("Yay, got results -> ", obj)
 
 	var tasks []interface {}
 	tasks = obj["tasks"].([]interface{} )
 
-	fmt.Printf("\nActive Tasks @ %s", getTasksUrl(config))
-	fmt.Printf("\n=============================================================================")
+	fmt.Fprintf(args.writer, "\nActive Tasks @ %s", tasksUrl)
+	fmt.Fprintf(args.writer, "\n=============================================================================")
 	for i := range tasks {
 		t := tasks[i].(map[string]interface{})
 
@@ -57,7 +81,7 @@ func showTasks(c *cli.Context) {
 		status := t["status"].(string)
 		start := t["startDate"].(string)
 		end := t["endDate"].(string)
-		fmt.Printf("\n%-40s %-10s %-15s %-15s", name,status,start,end )
+		fmt.Fprintf(args.writer, "\n%-40s %-10s %-15s %-15s", name,status,start,end )
 	}
-	fmt.Printf("\n\n")
+	fmt.Fprintf(args.writer, "\n\n")
 }
