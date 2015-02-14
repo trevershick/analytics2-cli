@@ -9,11 +9,11 @@ import (
 	"github.com/trevershick/analytics2-cli/a2m/config"
 )
 
-func ShowTasksCommand() cli.Command {
+func showTasksCommand() cli.Command {
 	return cli.Command {
 		Name:"tasks",
 		Usage: "Show the tasks in-flight",
-		Action: ShowTasks,
+		Action: showTasks,
 		Flags: []cli.Flag {
 			cli.BoolFlag {
 				Name: "recent, r",
@@ -27,7 +27,7 @@ func getTasksUrl(c *config.Configuration) string {
 	return c.FullUrl("/management/work/tasks")
 }
 
-func ShowTasks(c *cli.Context) {
+func showTasks(c *cli.Context) {
 	config, err := config.GetConfiguration(c)
 	if err != nil {
 		panic(err)

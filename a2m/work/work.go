@@ -6,8 +6,8 @@ import (
 
 func WorkCommands() []cli.Command {
 	workCommands := []cli.Command {
-		ShowCatalogCommand(),
-		ShowTasksCommand(),
+		showCatalogCommand(),
+		showTasksCommand(),
 	}
 	return workCommands
 }

@@ -24,6 +24,7 @@ func ExecuteAndExtractJsonObject(config *config.Configuration, url string, param
 	client := &http.Client{}
 
 	// move Urls to a method on the configuration object?
+	// fmt.Println("Getting data %s", url)
 
 	fullUrl := []string {url, params.Encode()}
 
